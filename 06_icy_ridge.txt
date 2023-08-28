@@ -1,0 +1,71 @@
+/*
+Copyright © 2019-2022, Matjaž Guštin
+<dev@matjaz.it> <https://matjaz.it>
+Released under the BSD 3-clause license.
+
+Level: Icy Ridge
+*/
+
+var loadouts = import my/loadouts
+
+func equip_melee()
+  equipL sword *8 fire
+  equipR shield *5 fire
+
+func equip_dps()
+  equipL sword *8 fire
+  equipR crossbow *10
+
+func equip_staff()
+  equip staff *6 fire
+
+func equip_ranged_shield()
+  equipL crossbow *10
+  equipR shield *5 fire
+
+var hrminir_encountered = false
+  
+?loc = icy_ridge
+  // Small enemies
+  ?foe.count > 8 & foe.distance <= 10
+    equip blade_of_god
+  :?foe = elemental | foe = ki
+    ?hp = maxhp | foe.distance <= 23
+      // Healed completely or enemy too close
+      equip_staff()
+    :
+      // Try to heal while attacking from afar
+      loadouts.equip_ranged_healing()
+  :?foe = pillar | foe = ice_wall
+    ?foe.distance <= 5
+      equip blade_of_god
+      ?hrminir_encountered &
+      ^ item.GetCooldown("blade_of_god") <= 0
+        // Hit the wall and the boss
+        // behind it as well. Don't use `R`
+        // before the boss to avoid waiting
+        // for the cooldown.
+        activate R
+    :
+      loadouts.equip_dashing()
+
+  // Hrímnir
+  :?foe = boss
+    hrminir_encountered = true
+    ?foe.distance <= 2
+      ?foe.armor > 0
+        loadouts.equip_armor_piercing()
+      :
+        equip_dps()
+    :?foe.distance <= 5
+      // The shovel has an attack range of 1
+      // so it forces the player to move very
+      // very close. So close that it can avoid
+      // the attacks (snowballs)
+      equip shovel
+    :?foe.distance > 5
+      equip_dashing()
+    ?hp <= 10
+      activate potion
+  loadouts.healwalk()
+
