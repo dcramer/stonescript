@@ -1,20 +1,23 @@
 var loadouts = import my/loadouts
 
 func equip_melee()
-  equipL sword *6 aether
-  equipR shield *5 aether
+  equipL sword *8 aether
+  equipR shield *6 aether
 
 func equip_dps()
-  equipL sword *6 aether
+  equipL sword *8 aether
   equipR sword *10
 
 func equip_dashing()
-  equipL sword *6 aether
-  equipR bashing shield
+  equipL sword *8 aether
+  ?item.GetCooldown("bash") <= 0
+    equipR bashing shield
+  :
+    equipR dashing shield
 
 func equip_ranged_shield()
   equipL crossbow *10
-  equipR shield *5 aether
+  equipR shield *6 aether
 
 ?loc = mine
   // Small enemies

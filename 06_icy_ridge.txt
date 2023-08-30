@@ -18,9 +18,17 @@ func equip_ranged_shield()
 var hrminir_encountered = false
   
 ?loc = icy_ridge
-  // Small enemies
-  ?foe.count > 8 & foe.distance <= 10
+  ?summon.count = 0 &
+  ^item.GetCooldown("fire_talisamn") <= 0
+    equipR fire talisman
+    activate R
+  :?foe.count > 7 & foe.distance > 6
+    // Small enemies
     equip blade_of_god
+  :?foe.count > 4 & foe.distance > 6 &
+  ^item.GetCooldown("blade_of_god") <= 0
+    equip blade_of_god
+    activate R
   :?foe = elemental | foe = ki
     ?hp = maxhp | foe.distance <= 23
       // Healed completely or enemy too close
@@ -30,7 +38,7 @@ var hrminir_encountered = false
       loadouts.equip_ranged_healing()
   :?foe = pillar | foe = ice_wall
     ?foe.distance <= 5
-      equip blade_of_god12
+      equip blade_of_god
       ?hrminir_encountered &
       ^ item.GetCooldown("blade_of_god") <= 0
         // Hit the wall and the boss
@@ -57,6 +65,10 @@ var hrminir_encountered = false
       equip shovel
     :?foe.distance > 5
       equip_dashing()
+    // Used for talisman quest
+    // ?summon.GetId() = cinderwisp &
+    // ^summon.GetVar("ignition") >= 10
+    //   activate cinderwisp
     ?hp <= 10
       activate potion
   loadouts.healwalk()

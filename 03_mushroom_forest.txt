@@ -6,7 +6,7 @@ func equip_melee()
   // equipR shield *5 poison
 
 func equip_staff()
-  equip staff *9 poison
+  equip staff *10 poison
 
 
 ?loc = fungus_forest

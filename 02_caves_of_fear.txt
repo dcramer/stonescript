@@ -5,19 +5,23 @@ func equip_melee()
   equipR shield *10
 
 func equip_staff()
-  equip staff *5 ice
+  equip staff *6 ice
 
 func equip_ranged()
   equip repeating crossbow 6*
 
 ?loc = caves
   ?foe ! boss  // Small enemies
-    ?foe.count > 7 & foe.distance > 6 &
+    ?summon.count = 0 &
+    ^item.GetCooldown("fire_talisamn") <= 0
+      equipR fire talisman
+      activate R
+    :?foe.count > 7 & foe.distance > 6 &
     ^item.GetCooldown("blade_of_god") <= 0
       // need some area damage
       equip blade_of_god
       activate R
-    :?foe.count > 7 & foe.distance < 10
+    :?foe.count > 5 & foe.distance < 10
       // staff stlil sucks
       equip blade_of_god
     :?foe.name = hill | foe.name = snail
@@ -34,9 +38,11 @@ func equip_ranged()
       loadouts.equip_dashing()
     :
       equip blade_of_god
-      ?item.GetCooldown("blade_of_god") <= 0
-        activate R
       // equip_melee()
+    // Used for talisman quest
+    // ?summon.GetId() = cinderwisp &
+    // ^summon.GetVar("ignition") >= 10
+    //   activate cinderwisp
     ?hp < 10
       activate potion
 

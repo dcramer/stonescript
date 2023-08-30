@@ -1,11 +1,26 @@
 var loadouts = import my/loadouts
 
 ?loc = temple
-  equip staff *5 ice
-  ?hp <= 10
-    activate potion
+  ?summon.count = 0 &
+  ^item.GetCooldown("fire_talisamn") <= 0
+    equipL crossbow 
+    equipR fire talisman
+    ?item.CanActivate("fire_talisman")
+      activate R
+  :?foe.count > 6 & foe.distance > 6 &
+  ^item.GetCooldown("blade_of_god") <= 0
+    equip blade_of_god
+    activate R
+  :
+    equip staff *5 ice
 
 ?loc = nagaraja
   equip blade_of_god
   ?hp <= 10 | debuffs.count >= 8
     activate potion
+  ?item.GetCooldown("blade_of_god") <= 0
+    equip blade_of_god
+    activate R
+  :?summon.GetId() = cinderwisp &
+  ^summon.GetVar("ignition") >= 10
+    activate cinderwisp
